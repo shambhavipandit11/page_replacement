@@ -72,11 +72,13 @@ class ClaymorphicSimulator(ctk.CTk):
         self.algo_combo = ctk.CTkComboBox(self.sidebar, values=["FIFO", "LRU", "MRU", "OPTIMAL", "COMPARE ALL"], variable=self.algo_var, fg_color=self.theme["card_bg"], text_color=self.theme["text_dark"], button_color=self.theme["accent_purple"], button_hover_color="#8675E0", border_width=0, corner_radius=12, height=40, font=("Plus Jakarta Sans", 12))
         self.algo_combo.pack(fill="x", padx=20, pady=(0, 15))
         
+        # Frame config
         ctk.CTkLabel(self.sidebar, text="NUMBER OF FRAMES", font=("Plus Jakarta Sans", 11, "bold"), text_color="#E6E2FF").pack(anchor="w", padx=25, pady=(10, 4))
         self.frames_var = tk.StringVar(value="3")
         self.frames_entry = ctk.CTkEntry(self.sidebar, textvariable=self.frames_var, fg_color=self.theme["card_bg"], text_color=self.theme["text_dark"], border_width=0, corner_radius=12, height=40, font=("Plus Jakarta Sans", 12))
         self.frames_entry.pack(fill="x", padx=20, pady=(0, 15))
         
+        # Input config
         ctk.CTkLabel(self.sidebar, text="REFERENCE STRING", font=("Plus Jakarta Sans", 11, "bold"), text_color="#E6E2FF").pack(anchor="w", padx=25, pady=(10, 4))
         self.ref_var = tk.StringVar(value="7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1")
         self.ref_entry = ctk.CTkEntry(self.sidebar, textvariable=self.ref_var, fg_color=self.theme["card_bg"], text_color=self.theme["text_dark"], border_width=0, corner_radius=12, height=40, font=("Plus Jakarta Sans", 12))
@@ -103,7 +105,6 @@ class ClaymorphicSimulator(ctk.CTk):
         # Tab View Switch Controllers
         self.view_mode = "SIM"
         self.tab_container = ctk.CTkFrame(nav_frame, fg_color="#E6E2FF", corner_radius=14)
-# (Padding is handled implicitly via child widget packing inside CustomTkinter instead)
         self.tab_container.pack(side="right", anchor="n", pady=5)
         
         self.sim_tab_btn = ctk.CTkButton(self.tab_container, text="Simulation Tool", width=110, height=32, corner_radius=10, fg_color=self.theme["card_bg"], text_color=self.theme["text_dark"], font=("Plus Jakarta Sans", 11, "bold"), command=lambda: self.toggle_tab_view("SIM"))
@@ -162,13 +163,9 @@ class ClaymorphicSimulator(ctk.CTk):
         scroll_container = ctk.CTkScrollableFrame(self.theory_view_frame, fg_color="transparent")
         scroll_container.pack(fill="both", expand=True)
         
-    def build_theory_academy_workspace(self):
-        scroll_container = ctk.CTkScrollableFrame(self.theory_view_frame, fg_color="transparent")
-        scroll_container.pack(fill="both", expand=True)
-        
-        # Row 1: Core Paging Theory Bento Block (Padding fixed)
+        # Row 1: Core Paging Theory Bento Block
         paging_card = ctk.CTkFrame(scroll_container, fg_color=self.theme["card_bg"], corner_radius=20)
-        paging_card.pack(fill="x", pady=(10, 15), padx=20) # Padding handled via pack layout manager
+        paging_card.pack(fill="x", pady=(10, 15), padx=20)
         
         ctk.CTkLabel(paging_card, text="Core Architecture: Virtual Memory & Paging", font=("Plus Jakarta Sans", 16, "bold"), text_color=self.theme["text_dark"]).pack(anchor="w", padx=20, pady=(20, 0))
         ctk.CTkLabel(paging_card, text="Paging is a memory management scheme that eliminates the need for contiguous allocation of physical memory. The operating system breaks secondary memory into equal-sized blocks called Pages, and physical RAM into blocks called Frames. When a process requests a page not currently mapped in RAM, a hardware exception called a Page Fault occurs, triggering the kernel to fetch data from secondary storage and swap out an existing frame if memory capacity is fully exhausted.", font=("Plus Jakarta Sans", 12), text_color=self.theme["text_dark"], wraplength=900, justify="left").pack(anchor="w", padx=20, pady=(8, 15))
@@ -179,24 +176,75 @@ class ClaymorphicSimulator(ctk.CTk):
         diag_frame_1.pack_propagate(False)
         self.render_abstract_paging_diagram(diag_frame_1)
 
-        # Row 2: Algorithmic Properties Detailed Matrix Breakdown (Padding fixed)
-        algo_vault_card = ctk.CTkFrame(scroll_container, fg_color=self.theme["card_bg"], corner_radius=20)
-        algo_vault_card.pack(fill="x", pady=5, padx=20) # Padding handled via pack layout manager
-        ctk.CTkLabel(algo_vault_card, text="Operational Mechanics & Structural Tradeoffs", font=("Plus Jakarta Sans", 16, "bold"), text_color=self.theme["text_dark"]).pack(anchor="w", padx=20, pady=(20, 10))
-        ctk.CTkLabel(algo_vault_card, text="Operational Mechanics & Structural Tradeoffs", font=("Plus Jakarta Sans", 16, "bold"), text_color=self.theme["text_dark"]).pack(anchor="w", pady=(0, 10))
-        
-        tech_specs = [
-            ("First-In, First-Out (FIFO)", "Operates on a pure linear queue layout framework. It targets the longest-resident page slot for eviction regardless of lookup request frequency metrics. Simple code architecture, but subject to Belady's Anomaly where allocating more frame units can directly cause drop faults to scale worse."),
-            ("Least Recently Used (LRU)", "Tracks recent operation timeline states dynamically. The model evicts the page node left unreferenced for the maximum historical duration window. Highly efficient, but requires continuous back-end timestamp matrix sorting updates to maintain system state parameters."),
-            ("Most Recently Used (MRU)", "The complete analytical inverse of LRU. Evicts frames accessed closest to the immediate validation step index pointer. Extremely effective in situations where a thread serially loops scanning wide sequences repeatedly, preserving old nodes from early cache sweeps."),
-            ("Optimal Replacement (MIN)", "The absolute performance benchmark algorithm. Evaluates historical patterns forward by surveying the prospective reference stream to drop frames uncalled for the longest duration. Real-time engineering deployments are impossible due to prospective data unpredictability.")
+        # Main Header
+        mechanics_title = ctk.CTkLabel(
+            scroll_container, 
+            text="Operational Mechanics & Structural Tradeoffs", 
+            font=("Plus Jakarta Sans", 16, "bold"), 
+            text_color="#2D2A4A",
+            anchor="w"
+        )
+        mechanics_title.pack(fill="x", padx=20, pady=(25, 15))
+
+        # Container for Cards (2x2 Grid System)
+        cards_container = ctk.CTkFrame(scroll_container, fg_color="transparent")
+        cards_container.pack(fill="x", padx=20, pady=5)
+        cards_container.grid_columnconfigure((0, 1), weight=1, uniform="equal")
+
+        # Card Configuration Data
+        algo_meta = [
+            {
+                "title": "First-In, First-Out (FIFO)",
+                "desc": "Operates on a pure linear queue framework. It targets the longest-resident page slot for eviction, completely ignoring frequency metrics. Simple code architecture, but subject to Belady's Anomaly where allocating more physical frames can cause page faults to scale worse.",
+                "color": "#E8E5FF", "border": "#B8A6FF", "text_color": "#5E46D6", "row": 0, "col": 0
+            },
+            {
+                "title": "Least Recently Used (LRU)",
+                "desc": "Tracks recent operation timeline states dynamically. The model evicts the page node left unreferenced for the longest elapsed window. Highly efficient, but requires continuous back-end timestamp matrix sorting updates to maintain tracking accuracy.",
+                "color": "#E3F2FD", "border": "#90CAF9", "text_color": "#1E88E5", "row": 0, "col": 1
+            },
+            {
+                "title": "Most Recently Used (MRU)",
+                "desc": "The complete analytical inverse of LRU. Evicts frames accessed closest to the immediate validation step. Incredibly powerful in situations where a thread serially loops scanning wide sequences repeatedly, preserving older root nodes.",
+                "color": "#E8F5E9", "border": "#A5D6A7", "text_color": "#43A047", "row": 1, "col": 0
+            },
+            {
+                "title": "Optimal Replacement (MIN)",
+                "desc": "The absolute performance benchmark algorithm. Evaluates historical patterns forward by surveying upcoming indices to drop frames uncalled for the longest duration. Real-time engineering deployments are impossible as it requires perfect future lookahead.",
+                "color": "#FFF3E0", "border": "#FFCC80", "text_color": "#EF6C00", "row": 1, "col": 1
+            }
         ]
-        
-        for name, spec in tech_specs:
-            spec_row = ctk.CTkFrame(algo_vault_card, fg_color="transparent")
-            spec_row.pack(fill="x", pady=8)
-            ctk.CTkLabel(spec_row, text=f"• {name}: ", font=("Plus Jakarta Sans", 12, "bold"), text_color=self.theme["sidebar_bg"]).pack(side="left", anchor="n")
-            ctk.CTkLabel(spec_row, text=spec, font=("Plus Jakarta Sans", 12), text_color=self.theme["text_dark"], wraplength=720, justify="left").pack(side="left", fill="x", expand=True)
+
+        # Render Loop for Cards
+        for data in algo_meta:
+            card = ctk.CTkFrame(
+                cards_container, 
+                fg_color=data["color"], 
+                border_color=data["border"], 
+                border_width=1, 
+                corner_radius=14
+            )
+            card.grid(row=data["row"], column=data["col"], padx=10, pady=10, sticky="nsew")
+            
+            t_lbl = ctk.CTkLabel(
+                card, 
+                text=data["title"], 
+                font=("Plus Jakarta Sans", 13, "bold"), 
+                text_color=data["text_color"],
+                anchor="w"
+            )
+            t_lbl.pack(fill="x", padx=15, pady=(15, 6))
+            
+            d_lbl = ctk.CTkLabel(
+                card, 
+                text=data["desc"], 
+                font=("Plus Jakarta Sans", 11), 
+                text_color="#2D2A4A",
+                wraplength=340,
+                justify="left",
+                anchor="nw"
+            )
+            d_lbl.pack(fill="both", expand=True, padx=15, pady=(0, 15))
 
     def toggle_tab_view(self, target_tab):
         if target_tab == "SIM":
@@ -218,7 +266,6 @@ class ClaymorphicSimulator(ctk.CTk):
         fig, ax = plt.subplots(figsize=(10, 1.8), facecolor="#F4F2F9")
         ax.set_facecolor("#F4F2F9")
         
-        # Drawing Page Mapping blocks manually on matplotlib canvas
         ax.text(0.5, 0.5, "Virtual Pages\n(Secondary Disk)", ha='center', va='center', bbox=dict(boxstyle='round,pad=0.6', facecolor=self.theme["accent_purple"], edgecolor='#9D8DF1', lw=1.5), fontname="sans-serif", weight="bold", fontsize=9, color="#2D2A4A")
         ax.annotate('', xy=(3.1, 0.5), xytext=(1.7, 0.5), arrowprops=dict(arrowstyle="->", color="#9D8DF1", lw=2))
         
